@@ -1,5 +1,12 @@
 <?php 
 
+    require '../includes/funciones.php';
+    $auth = estaAutenticado();
+
+    if(!$auth){
+        header('Location: /');
+    }
+
     //Base de datos
     require '../../includes/config/database.php';
     $db = conectarDB();
@@ -30,9 +37,9 @@
         // var_dump($_POST);
         // echo "/<pre>";
 
-        echo "<pre>";
-        var_dump($_FILES);
-        echo "/<pre>";
+        // echo "<pre>";
+        // var_dump($_FILES);
+        // echo "/<pre>";
 
         // exit;
 
@@ -77,7 +84,7 @@
         }
 
         //validar por tamaño (100kb maximo)
-        $medida = 1000*100;
+        $medida = 1000*1000;
         if($imagen['size']>$medida){
             $errores[] = "la imagen es muy pesada";
         }
@@ -92,22 +99,36 @@
         //Revisar que el arreglo de erroes este vacio
         if(empty($errores)){
             
+            //Subida de archivos
+
+            //crear una carpeta
+            $carpetaImagenes = '../../imagenes/';
+            
+            if(!is_dir($carpetaImagenes)){
+                mkdir($carpetaImagenes);
+            }
+
+            //generar nombre unico
+            $nombreImagen = md5(uniqid(rand(), true)) . ".jpg";
+
+            //subir la imagen
+            move_uploaded_file($imagen['tmp_name'],$carpetaImagenes . $nombreImagen);
+
+
             //Insertar en la bd
-            $query = "INSERT INTO propiedades (titulo, precio, descripcion, habitaciones, wc, estacionamientos, creado, vendedores_id) VALUES('$titulo', '$precio', '$descripcion', '$habitaciones', '$wc', '$estacionamientos', '$creado', '$vendedorId' )";
+            $query = "INSERT INTO propiedades (titulo, precio, imagen, descripcion, habitaciones, wc, estacionamientos, creado, vendedores_id) VALUES('$titulo', '$precio', '$nombreImagen','$descripcion', '$habitaciones', '$wc', '$estacionamientos', '$creado', '$vendedorId' )";
        
             // echo $query;
             $resultado = mysqli_query($db, $query);
     
             if($resultado){
-                echo "Insertado correctamente";
 
                 //redirecionar al usuario
-                header('Location: /admin');
+                header('Location: /admin?resultado=1');
             }
         }
     }
 
-    require '../../includes/funciones.php';
     incluirTemplate('header')
 ?>
 
