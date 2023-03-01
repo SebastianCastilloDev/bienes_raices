@@ -8,7 +8,8 @@
     } 
 
     //importar la base de datos
-    require 'includes/config/database.php';
+    require 'includes/app.php';
+    
     $db = conectarDB();
     //consultar 
     $query= "SELECT * FROM propiedades WHERE id = ${id}";
@@ -24,7 +25,6 @@
 
 
 
-    require 'includes/funciones.php';
     incluirTemplate('header')
 ?>
 
