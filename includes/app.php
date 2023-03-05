@@ -4,8 +4,8 @@ require 'funciones.php';
 require 'config/database.php';
 require __DIR__.'/../vendor/autoload.php';
 
-use App\Propiedad;
+$db = conectarDB();
 
-$propiedad = new Propiedad;
+use App\ActiveRecord;
 
-var_dump($propiedad);
+ActiveRecord::setDB($db);
